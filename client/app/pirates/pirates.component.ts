@@ -32,7 +32,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     this.container.nativeElement.appendChild(app.view);
 
     const renderer = app.renderer;
-    renderer.resolution = 1;
+    renderer.resolution = 4;
     const container = new PIXI.Container();
 
     app.stage.addChild(container);
@@ -40,20 +40,38 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     app.stage.addChild(this.createIsland(610, 310));
     app.stage.addChild(this.createPirateHead(470, 10));
 
-    const modal1 = this.createWoodenModal('ОСАДА GEEKNIGHT', [], 975, 30);
+    const modal1 = this.createWoodenModal(
+      'ОСАДА "GEEKNIGHT"',
+      [
+        this.createLabel(IMGS.STAT_GOLD, 50, 'fraction', 500),
+        this.createLabel(IMGS.STAT_DIAMOND, 50, 'fraction', 500),
+        this.createLabel(IMGS.STAT_CROWN, 50, 'fraction', 500)
+      ],
+      975,
+      30
+    );
     const modal2 = this.createWoodenModal(
       'СОКРОВИЩНИЦА',
       [
-        this.createLabel(IMGS.STAT_GOLD, 5000),
-        this.createLabel(IMGS.STAT_DIAMOND, 5000),
-        this.createLabel(IMGS.STAT_SKULL, 5000),
-        this.createLabel(IMGS.STAT_PARROT, 5000),
-        this.createLabel(IMGS.STAT_CROWN, 5000)
+        this.createLabel(IMGS.STAT_GOLD, 5000, '', ''),
+        this.createLabel(IMGS.STAT_DIAMOND, 5000, '', ''),
+        this.createLabel(IMGS.STAT_SKULL, 5000, '', ''),
+        this.createLabel(IMGS.STAT_PARROT, 5000, '', ''),
+        this.createLabel(IMGS.STAT_CROWN, 5000, '', '')
       ],
       975,
       modal1.height + 60
     );
-    const modal3 = this.createWoodenModal('БОРТЖУРНАЛ', [], 975, modal1.height + modal2.height + 90);
+    const modal3 = this.createWoodenModal(
+      'БОРТЖУРНАЛ',
+      [
+        this.createLabel(IMGS.STAT_BATTLES, 25, 'subtext', '+20 / -5'),
+        this.createLabel(IMGS.STAT_FLAG, 1100, '', ''),
+        this.createLabel(IMGS.STAT_GOLD, 50000, '', '')
+      ],
+      975,
+      modal1.height + modal2.height + 90
+    );
 
     app.stage.addChild(modal1);
     app.stage.addChild(modal2);
@@ -104,7 +122,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       woodenModal.addChild(contentContainer);
       contentContainer.x = woodenModalTitle.x;
       contentContainer.y = woodenModalTitle.height + woodenModalTitle.y + 10;
-      woodenModalBackground.height = contentContainer.height + woodenModalTitle.height + woodenModalTitle.y;
+      woodenModalBackground.height = contentContainer.height + contentContainer.y - woodenModalTop.height;
     }
     woodenModal.addChild(woodenModalBottom);
     woodenModal.addChild(woodenModalTitle);
@@ -117,7 +135,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     return woodenModal;
   }
 
-  createLabel(icon, text) {
+  createLabel(icon, text, subTextType, subText) {
     const labelContainer = new PIXI.Container();
     const iconSprite = new PIXI.Sprite(icon);
     const label = new PIXI.Text(text);
@@ -134,6 +152,44 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     };
     label.y = (iconSprite.height - label.height) / 2;
     label.x = iconSprite.width + 10;
+
+    if (subTextType === 'fraction') {
+      const fractionSeparator = new PIXI.Text('/');
+      const fraction = new PIXI.Text(subText);
+      const style = {
+        fontFamily: 'pixel_bold',
+        fontSize: 28,
+        dropShadow: true,
+        dropShadowAlpha: 0.5,
+        fill: 0xab5c1c,
+      };
+
+      labelContainer.addChild(fractionSeparator);
+      labelContainer.addChild(fraction);
+      fractionSeparator.style = style;
+      fractionSeparator.x = label.x + label.width + 10;
+      fractionSeparator.y = label.y;
+      fraction.style = style;
+      fraction.x = fractionSeparator.x + fractionSeparator.width + 10;
+      fraction.y = label.y;
+    }
+
+    if (subTextType === 'subtext') {
+      const subtext = new PIXI.Text(subText);
+      const style = {
+        fontFamily: 'pixel_bold',
+        fontSize: 28,
+        dropShadow: true,
+        dropShadowAlpha: 0.5,
+        fill: 0xab5c1c,
+      };
+
+      labelContainer.addChild(subtext);
+      subtext.style = style;
+      label.y = 0;
+      subtext.x = label.x;
+      subtext.y = icon.height - label.height + 5;
+    }
 
     return labelContainer;
   }

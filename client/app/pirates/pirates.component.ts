@@ -39,6 +39,16 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     app.stage.addChild(this.createShip(130, 63)); // 500, 424
     app.stage.addChild(this.createIsland(610, 310));
     app.stage.addChild(this.createPirateHead(470, 10));
+    app.stage.addChild(this.createButton(
+      () => { console.log('click'); },
+      {
+        text: 'click',
+        width: 100,
+        height: 50,
+        x: 0,
+        y: 0
+      }
+    ));
 
     const modal1 = this.createWoodenModal('ОСАДА GEEKNIGHT', [], 975, 30);
     const modal2 = this.createWoodenModal(
@@ -235,5 +245,85 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     headContainer.height = headImage.height;
 
     return headContainer;
+  }
+
+  createButton(
+    cb: () => void,
+    {text, width, height, x, y}: {text?; width?; height?; x?; y?; } = {} ) {
+    const button = new PIXI.Sprite(IMGS.BUTTON);
+
+    if (width !== undefined && height !== undefined) {
+      button.width = width;
+      button.height = height;
+    }
+
+    if (x !== undefined && y !== undefined) {
+      button.x = x;
+      button.y = y;
+    }
+
+    if (text !== undefined) {
+      const buttonText = new PIXI.Text(text);
+      buttonText.anchor.x = 0.2;
+      buttonText.anchor.y = 0.3;
+      buttonText.style = this.getButtonTextStyle(button.width - 40);
+      buttonText.x = button.width  / 2;
+      buttonText.y = button.height / 2;
+      button.addChild(buttonText);
+    }
+
+    button.buttonMode = true;
+    button.interactive = true;
+
+    button
+      .on('pointerdown', function() {
+        this.isDown = true;
+        this.texture = IMGS.BUTTON_PRESSED;
+        cb();
+      })
+      .on('pointerup', this.onButtonUp)
+      .on('pointerupoutside', this.onButtonUp)
+      .on('pointerover', this.onButtonOver)
+      .on('pointerout', this.onButtonOut);
+
+    return button;
+  }
+
+  onButtonUp = function() {
+    this.isDown = false;
+    if (this.isOver) {
+      this.texture = IMGS.BUTTON_HOVER;
+    } else {
+      this.texture = IMGS.BUTTON;
+    }
+  };
+
+  onButtonOver = function() {
+    this.isOver = true;
+    if (this.isdown) {
+        return;
+    }
+    this.texture = IMGS.BUTTON_HOVER;
+  };
+
+  onButtonOut = function() {
+    this.isOver = false;
+    if (this.isdown) {
+        return;
+    }
+    this.texture = IMGS.BUTTON;
+  };
+
+  getButtonTextStyle(width) {
+    return {
+      fontFamily: 'pixel_bold',
+      fontSize: 28,
+      wordWrap: true,
+      wordWrapWidth: width,
+      dropShadow: true,
+      dropShadowAlpha: 0.5,
+      fill: 0xffffff,
+      align: 'center'
+    };
   }
 }

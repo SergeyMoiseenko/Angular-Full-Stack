@@ -34,6 +34,16 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     renderer.resolution = 4;
     const container = new PIXI.Container();
 
+    app.stage.addChild(container);
+
+    const slide = background(containerSize, new PIXI.Sprite(IMGS.BACKGROUND_SEA), 'cover');
+    container.addChild(slide);
+    container.addChild(this.createWoodenModal());
+
+    renderer.render(app.stage);
+  }
+
+  createWoodenModal() {
     const woodenModal = new PIXI.Container();
     woodenModal.width = 286;
     woodenModal.height = 376;
@@ -71,12 +81,6 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     woodenModal.addChild(woodenModalTitle);
     woodenModal.addChild(woodenModalBottom);
 
-    app.stage.addChild(container);
-
-    const slide = background(containerSize, new PIXI.Sprite(IMGS.BACKGROUND_SEA), 'cover');
-    container.addChild(slide);
-    container.addChild(woodenModal);
-
-    renderer.render(app.stage);
+    return woodenModal;
   }
 }

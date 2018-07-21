@@ -57,6 +57,52 @@ export default function setRoutes(app) {
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);
 
+  router.route('/babl').get(function(req, res) {
+    Sprint.find({
+      current: true
+    }).exec(function(err, sprints) {
+      Task.find({
+        name: sprints[0].task1
+      }).exec(function(err1, first_task) {
+        Task.find({
+          name: sprints[0].task2
+        }).exec(function(err2, second_task) {
+          const mess = 'Йо-хо-хо! Наша следующая цель шхуна ' + sprints[0].name +
+          '! Если нам удастся захватить её с ' + sprints[0].begin + ' до ' +
+          sprints[0].end + ', мы получим: ';
+          const task1_mess = first_task[0].text + sprints[0].count1 + first_task[0].text_end;
+          const task2_mess = second_task[0].text  + sprints[0].count2 + second_task[0].text_end;
+          res.json({main: mess, prise: {prise: 'gold', count: sprints[0].gold},
+            task1: {mess: task1_mess, prise: first_task[0].prize, count: sprints[0].count1},
+            task2: {mess: task2_mess, prise: second_task[0].prize, count: sprints[0].count2}});
+        });
+      });
+    });
+  });
+
+  router.route('/boarding').put(function(req, res) {
+    Sprint.find({
+      current: true
+    }).exec(function(err, sprints) {
+      let upd;
+      if (sprints[0].gold === sprints[0].curr_gold) {
+        const gold = sprints[0].gold + sprints[0].total_gold;
+        const parrot = sprints[0].parrot + sprints[0].total_parrot;
+        const skull = sprints[0].skull + sprints[0].total_skull;
+        const crown = sprints[0].crown + sprints[0].total_crown;
+        const diamond = sprints[0].diamond + sprints[0].total_diamond;
+        upd = {win: true, current: false, total_gold: gold, total_parrot: parrot, total_skull: skull,
+        total_crown: crown, total_diamond: diamond, battle: sprints[0].battle + 1};
+      } else {
+        upd = {win: false, current: false, fail_battle: sprints[0].fail_battle + 1};
+      }
+      Sprint.findOneAndUpdate({ current: true }, upd, (err1) => {
+        if (err1) { return console.error(err1); }
+        res.sendStatus(200);
+      });
+    });
+  });
+
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
 

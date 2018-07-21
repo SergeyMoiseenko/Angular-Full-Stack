@@ -26,7 +26,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
   }
 
   runGame() {
-    const containerSize = {x: 1110, y: 624};
+    const containerSize = {x: 1200, y: 675};
     const app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
     this.container.nativeElement.appendChild(app.view);
 
@@ -35,10 +35,11 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     const container = new PIXI.Container();
 
     app.stage.addChild(container);
+    app.stage.addChild(this.createShip(130, 63)); // 500, 424
+    app.stage.addChild(this.createWoodenModal());
 
     const slide = background(containerSize, new PIXI.Sprite(IMGS.BACKGROUND_SEA), 'cover');
     container.addChild(slide);
-    container.addChild(this.createWoodenModal());
 
     renderer.render(app.stage);
   }
@@ -47,7 +48,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     const woodenModal = new PIXI.Container();
     woodenModal.width = 286;
     woodenModal.height = 376;
-    woodenModal.x = 794;
+    woodenModal.x = 884;
     woodenModal.y = 30;
 
     const woodenModalBackground = new PIXI.extras.TilingSprite(IMGS.CONT_BG);
@@ -82,5 +83,40 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     woodenModal.addChild(woodenModalBottom);
 
     return woodenModal;
+  }
+
+  createShip(x, y) {
+    const scale = 0.625;
+
+    const shipContainer = new PIXI.Container();
+
+    const shipImg = new PIXI.Sprite(IMGS.SHIP);
+    shipImg.position = { x: 0, y: 0 };
+    shipImg.scale = { x: scale, y: scale };
+    shipContainer.addChild(shipImg);
+
+    const shadowImg = new PIXI.Sprite(IMGS.SHIP_SHADOW);
+    shadowImg.scale = { x: scale, y: scale };
+    shadowImg.position = { x: 20, y: shipImg.height };
+    shipContainer.addChild(shadowImg);
+
+    this.addPirateToShip(shipContainer, 85, 65, IMGS.PIRATE_1, scale);
+    this.addPirateToShip(shipContainer, 275, 315, IMGS.PIRATE_2, scale);
+    this.addPirateToShip(shipContainer, 435, 295, IMGS.PIRATE_3, scale);
+    this.addPirateToShip(shipContainer, 85, 385, IMGS.PIRATE_4, scale);
+    this.addPirateToShip(shipContainer, 315, 385, IMGS.PIRATE_5, scale);
+
+    shipContainer.width = shipImg.width;
+    shipContainer.height = shipImg.height + shadowImg.height;
+    shipContainer.x = x;
+    shipContainer.y = y;
+    return shipContainer;
+  }
+
+  addPirateToShip(shipContainer, x, y, pirateResources, scale) {
+    const sprite = new PIXI.Sprite(pirateResources);
+    sprite.scale = { x: scale, y: scale };
+    sprite.position = { x, y };
+    shipContainer.addChild(sprite);
   }
 }

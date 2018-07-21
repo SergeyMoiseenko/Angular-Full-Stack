@@ -29,8 +29,16 @@ mongoose.connect(mongodbURI)
 
     setRoutes(app);
 
-    app.get('/*', function(req, res) {
-      res.sendFile(path.join(__dirname, '../public/index.html'));
+    // app.get('/*', function(req, res) {
+    //   res.sendFile(path.join(__dirname, '../public/index.html'));
+    // });
+
+    app.get('/hello', function (req, res) {
+      res.send('Hello World!');
+    });
+
+    app.get('/task', function (req, res) {
+      res.json({'result': 'Yohoho!'});
     });
 
     if (!module.parent) {

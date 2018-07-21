@@ -9,6 +9,9 @@ import setRoutes from './routes';
 import Task from './models/task';
 
 const app = express();
+
+const spawn = require('child_process').spawn;
+
 dotenv.load({ path: '.env' });
 app.set('port', (process.env.PORT || 3000));
 
@@ -117,6 +120,19 @@ mongoose.connect(mongodbURI)
       });
       // res.send({main: mess, task1: 'gdgg'});
     });
+
+    console.log(path.join(process.cwd(), 'server'));
+    const pt = spawn('python3', ['./external/updater.py'], {
+        cwd: path.join(process.cwd(), 'server')
+    });
+    pt.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+    setInterval(function() {
+      spawn('python3', ['./external/updater.py'], {
+          cwd: path.join(process.cwd(), 'server')
+      });
+      }, 30000);
 
     if (!module.parent) {
       app.listen(app.get('port'), () => console.log(`Angular Full Stack listening on port ${app.get('port')}`));

@@ -16,6 +16,11 @@ const sprintSchema = new mongoose.Schema({
   skull: Number,
   crown: Number,
   diamond: Number,
+  curr_gold: Number,
+  curr_parrot: Number,
+  curr_skull: Number,
+  curr_crown: Number,
+  curr_diamond: Number,
   total_gold: Number,
   total_parrot: Number,
   total_skull: Number,
@@ -24,7 +29,8 @@ const sprintSchema = new mongoose.Schema({
   battle: Number,
   fail_battle: Number,
   big_gold: Number,
-  win: Boolean
+  win: Boolean,
+  current: Boolean
 });
 
 export const Sprint = mongoose.model('Sprint', sprintSchema);

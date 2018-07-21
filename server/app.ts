@@ -6,6 +6,7 @@ import * as path from 'path';
 import {Sprint} from './models/sprint';
 
 import setRoutes from './routes';
+import Task from './models/task';
 
 const app = express();
 dotenv.load({ path: '.env' });
@@ -63,9 +64,46 @@ mongoose.connect(mongodbURI)
         battle: 1,
         fail_battle: 0,
         big_gold: 50,
-        win: true
+        win: true,
+        current: false
       });
       first_sprint.save((err, item) => {});
+      const task1 = new Task({
+        name: 'Read map',
+        text: 'Если юнга прочитает ',
+        text_end: ' зашифрованные карты',
+        prize: 'parrot',
+        prize_size: 1
+      });
+      task1.save((err, item) => {});
+      const task2 = new Task({
+        name: 'Tales',
+        text: 'Если боцман поведает ',
+        text_end: ' йо-хо-хо-ительные истории',
+        prize: 'skull',
+        prize_size: 1
+      });
+      task2.save((err, item) => {});
+      const task3 = new Task({
+        name: 'Leak',
+        text: 'Если капитан устранит ',
+        text_end: ' протечку в трюме',
+        prize: 'diamond',
+        prize_size: 1
+      });
+      task3.save((err, item) => {});
+    });
+
+    app.get('/babl', function(req, res) {
+      let mess;
+      Sprint.find({
+        name: 'Start'
+      }).exec(function(err, sprints) {
+        mess = 'Йо-хо-хо! Наша следующая цель шхуна ' + sprints[0].name +
+        '! Если нам удастся захватить её с ' + sprints[0].begin + ' до ' +
+        sprints[0].end + ', мы получим: ';
+      });
+      res.send({main: mess, task1: 'gdgg'});
     });
 
     if (!module.parent) {

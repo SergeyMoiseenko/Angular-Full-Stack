@@ -4,10 +4,12 @@ import CatCtrl from './controllers/cat';
 import UserCtrl from './controllers/user';
 import SprintCtrl from './controllers/sprint';
 import CrewCtrl from './controllers/crew';
+import TaskCtrl from './controllers/task';
 import Cat from './models/cat';
 import User from './models/user';
 import Sprint from './models/sprint';
 import Crew from './models/crew';
+import Task from './models/task';
 
 export default function setRoutes(app) {
 
@@ -17,10 +19,12 @@ export default function setRoutes(app) {
   const userCtrl = new UserCtrl();
   const sprintCtrl = new SprintCtrl();
   const crewCtrl = new CrewCtrl();
+  const taskCtrl = new TaskCtrl();
 
   // Sprint
   router.route('/sprint').get(sprintCtrl.getAll);
   router.route('/sprint/:name').get(sprintCtrl.getByName);
+  router.route('/sprint/current/:current').get(sprintCtrl.getCurrent);
   router.route('/sprint/:name').put(sprintCtrl.updateByName);
   router.route('/sprint').post(sprintCtrl.insert);
 
@@ -29,6 +33,12 @@ export default function setRoutes(app) {
   router.route('/crew/:name').get(crewCtrl.getByName);
   router.route('/crew/:name').put(crewCtrl.updateByName);
   router.route('/crew').post(crewCtrl.insert);
+
+  // Task
+  router.route('/task').get(taskCtrl.getAll);
+  router.route('/task/:name').get(taskCtrl.getByName);
+  router.route('/task/:name').put(taskCtrl.updateByName);
+  router.route('/task').post(taskCtrl.insert);
 
   // Cats
   router.route('/cats').get(catCtrl.getAll);

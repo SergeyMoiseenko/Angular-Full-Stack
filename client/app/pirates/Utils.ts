@@ -36,7 +36,7 @@ export const IMG_PATHS = {
   CONT_BG: 'assets/img/ui_container_bg.png',
   CONT_FOOTER: 'assets/img/ui_container_footer.png',
   CONT_HEADER: 'assets/img/ui_container_header.png',
-  PIRATE_HEAD: 'assets/img/ui_piratehead.png'
+  PIRATE_HEAD: 'assets/img/ui_piratehead.png',
 };
 
 class ImageAccessor {

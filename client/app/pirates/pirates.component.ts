@@ -31,44 +31,45 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     this.container.nativeElement.appendChild(app.view);
 
     const renderer = app.renderer;
+    renderer.resolution = 4;
     const container = new PIXI.Container();
 
-      const woodenModal = new PIXI.Container();
-      woodenModal.width = 286;
-      woodenModal.height = 376;
-      woodenModal.x = 794;
-      woodenModal.y = 30;
+    const woodenModal = new PIXI.Container();
+    woodenModal.width = 286;
+    woodenModal.height = 376;
+    woodenModal.x = 794;
+    woodenModal.y = 30;
 
-      const woodenModalBackground = new PIXI.extras.TilingSprite(IMGS.CONT_BG);
-      woodenModalBackground.width = 286;
-      woodenModalBackground.height = 300;
-      woodenModalBackground.y = 38;
+    const woodenModalBackground = new PIXI.extras.TilingSprite(IMGS.CONT_BG);
+    woodenModalBackground.width = 286;
+    woodenModalBackground.height = 300;
+    woodenModalBackground.y = 38;
 
-      const woodenModalTop = new PIXI.Sprite(IMGS.CONT_HEADER);
-      woodenModalTop.width = 286;
-      woodenModalTop.height = 38;
+    const woodenModalTop = new PIXI.Sprite(IMGS.CONT_HEADER);
+    woodenModalTop.width = 286;
+    woodenModalTop.height = 38;
 
-      const woodenModalBottom = new PIXI.Sprite(IMGS.CONT_FOOTER);
-      woodenModalBottom.width = 286;
-      woodenModalBottom.height = 38;
-      woodenModalBottom.y = 338;
+    const woodenModalBottom = new PIXI.Sprite(IMGS.CONT_FOOTER);
+    woodenModalBottom.width = 286;
+    woodenModalBottom.height = 38;
+    woodenModalBottom.y = 338;
 
-      const woodenModalTitle = new PIXI.Text('СОКРОВИЩНИЦА');
-      woodenModalTitle.width = 206;
-      woodenModalTitle.x = 40;
-      woodenModalTitle.y = 30;
-      woodenModalTitle.style = {
-        fontFamily: 'Arial',
-        fontSize: 16,
-        wordWrap: true,
-        wordWrapWidth: 206,
-        fill: 0xffffff,
-      };
+    const woodenModalTitle = new PIXI.Text('СОКРОВИЩНИЦА');
+    woodenModalTitle.width = 206;
+    woodenModalTitle.x = 40;
+    woodenModalTitle.y = 30;
+    woodenModalTitle.style = {
+      fontFamily: 'pixel_bold',
+      fontSize: 28,
+      wordWrap: true,
+      wordWrapWidth: 206,
+      fill: 0xffffff,
+    };
 
-      woodenModal.addChild(woodenModalBackground);
-      woodenModal.addChild(woodenModalTop);
-      woodenModal.addChild(woodenModalTitle);
-      woodenModal.addChild(woodenModalBottom);
+    woodenModal.addChild(woodenModalBackground);
+    woodenModal.addChild(woodenModalTop);
+    woodenModal.addChild(woodenModalTitle);
+    woodenModal.addChild(woodenModalBottom);
 
     app.stage.addChild(container);
 

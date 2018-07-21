@@ -37,6 +37,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     app.stage.addChild(container);
     app.stage.addChild(this.createShip(130, 73)); // 500, 424
     app.stage.addChild(this.createIsland(610, 310));
+    app.stage.addChild(this.createPirateHead(470, 10));
     app.stage.addChild(this.createWoodenModal());
 
 
@@ -166,5 +167,23 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     sprite.scale = { x: scale, y: scale };
     sprite.position = { x, y };
     shipContainer.addChild(sprite);
+  }
+
+  createPirateHead(x, y) {
+    const scale = 0.625;
+
+    const headContainer = new PIXI.Container();
+
+    const headImage = new PIXI.Sprite(IMGS.PIRATE_HEAD);
+    headImage.position = { x: 0, y: 0 };
+    headImage.scale = { x: scale, y: scale };
+    headContainer.addChild(headImage);
+
+    headContainer.x = x;
+    headContainer.y = y;
+    headContainer.width = headImage.width;
+    headContainer.height = headImage.height;
+
+    return headContainer;
   }
 }

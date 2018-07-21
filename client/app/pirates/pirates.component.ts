@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { background } from './Utils';
+import { background, IMGS, loadResources } from './Utils';
 
 declare var PIXI: any;
 
@@ -20,15 +20,18 @@ export class PiratesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const containerSize = {x: 1110, y: 624};
     setTimeout( () => {
-      const app = new PIXI.Application(containerSize.x, containerSize.y, { backgroundColor : 0x1099bb });
-      this.container.nativeElement.appendChild(app.view);
+      loadResources(this.runGame.bind(this));
+    }, 0);
+  }
 
-      const renderer = app.renderer;
-      const container = new PIXI.Container();
+  runGame() {
+    const containerSize = {x: 1110, y: 624};
+    const app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
+    this.container.nativeElement.appendChild(app.view);
 
-      app.stage.addChild(container);
+    const renderer = app.renderer;
+    const container = new PIXI.Container();
 
       const woodenModal = new PIXI.Container();
       woodenModal.width = 286;
@@ -36,17 +39,16 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       woodenModal.x = 794;
       woodenModal.y = 30;
 
-      const woodenModalBackground = new PIXI.extras.TilingSprite.fromImage('assets/img/ui_container_bg.png');
-      // woodenModalBackground.height = 100;
+      const woodenModalBackground = new PIXI.extras.TilingSprite(IMGS.CONT_BG);
       woodenModalBackground.width = 286;
       woodenModalBackground.height = 300;
       woodenModalBackground.y = 38;
 
-      const woodenModalTop = new PIXI.Sprite.fromImage('assets/img/ui_container_header.png');
+      const woodenModalTop = new PIXI.Sprite(IMGS.CONT_HEADER);
       woodenModalTop.width = 286;
       woodenModalTop.height = 38;
 
-      const woodenModalBottom = new PIXI.Sprite.fromImage('assets/img/ui_container_footer.png');
+      const woodenModalBottom = new PIXI.Sprite(IMGS.CONT_FOOTER);
       woodenModalBottom.width = 286;
       woodenModalBottom.height = 38;
       woodenModalBottom.y = 338;
@@ -68,13 +70,12 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       woodenModal.addChild(woodenModalTitle);
       woodenModal.addChild(woodenModalBottom);
 
-      PIXI.loader.add('assets/img/bg_ocean_middle.png').load(function () {
-          const slide = background(containerSize, new PIXI.Sprite.fromImage('assets/img/bg_ocean_middle.png'), 'cover');
-          container.addChild(slide);
-          container.addChild(woodenModal);
+    app.stage.addChild(container);
 
-          renderer.render(app.stage);
-      });
-    }, 0);
+    const slide = background(containerSize, new PIXI.Sprite(IMGS.BACKGROUND_SEA), 'cover');
+    container.addChild(slide);
+    container.addChild(woodenModal);
+
+    renderer.render(app.stage);
   }
 }

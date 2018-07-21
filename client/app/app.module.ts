@@ -1,6 +1,8 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, InjectionToken } from '@angular/core';
 import { JwtModule } from '@auth0/angular-jwt';
+/* import * as PIXI from 'pixi.js/dist/pixi.js'; */
 
+import { PiratesComponent } from './pirates/pirates.component';
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
 import { CatService } from './services/cat.service';
@@ -18,6 +20,9 @@ import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
+/* const PIXIToken = new InjectionToken<typeof PIXI>('PIXI');
+const PIXIProvider = { provide: PIXIToken, multi: true, useValue: PIXI }; */
+
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -32,7 +37,8 @@ export function tokenGetter() {
     LogoutComponent,
     AccountComponent,
     AdminComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    PiratesComponent,
   ],
   imports: [
     RoutingModule,
@@ -49,7 +55,8 @@ export function tokenGetter() {
     AuthGuardLogin,
     AuthGuardAdmin,
     CatService,
-    UserService
+    UserService,
+    /* PIXIProvider */
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

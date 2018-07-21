@@ -27,11 +27,11 @@ export class PiratesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout( () => {
       loadResources( () => {
-        /* this.http.post('http://localhost:3000/first', {}).subscribe();
-        this.http.get('http://localhost:3000/babl').subscribe( (data) => {
-          console.log(data); */
+        // this.http.post('http://localhost:3000/first', {}).subscribe();
+        // this.http.get('http://localhost:3000/babl').subscribe( (data) => {
+        //   console.log(data);
           this.runGame({ bubble: undefined });
-        /* }); */
+        // });
       });
     }, 0);
   }
@@ -41,18 +41,19 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     if (!this.app) {
       this.app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
       this.container.nativeElement.appendChild(this.app.view);
-      this.app.render.resolution = 1;
     } else {
       this.app.stage.removeChildren();
     }
 
     const renderer = this.app.renderer;
+    renderer.resolution = 4;
     const container = new PIXI.Container();
 
     this.app.stage.addChild(container);
     this.app.stage.addChild(this.createShip(130, 63)); // 500, 424
     this.app.stage.addChild(this.createIsland(610, 310));
-    this.app.stage.addChild(this.createPirateHead(470, 10));
+    this.app.stage.addChild(this.createPirateHead(450, 10));
+    this.app.stage.addChild(this.createBubble());
 
     const modal1 = this.createWoodenModal(
       'ОСАДА "GEEKNIGHT"',
@@ -418,5 +419,32 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       fill: 0xffffff,
       align: 'center'
     };
+  }
+
+  createBubble() {
+    const bubbleContainer = new PIXI.Container();
+    bubbleContainer.x = 580;
+    bubbleContainer.y = 25;
+
+    const bubbleImage = new PIXI.Sprite(IMGS.BUBBLE);
+    bubbleContainer.addChild(bubbleImage);
+
+    bubbleImage.scale = { x: 0.625, y: 0.625 };
+
+    const bubbleText = new PIXI.Text('ЙО-ХО-ХО!НАША СЛЕДУЮЩАЯ ЦЕЛЬ - ТОРГОВАЯ ШХУНА GEEKNIGHT!\n\nЕСЛИ НАМ УДАСТСЯ ЗАХВАТИТЬ ЕЁ С 15.07 по 25.07, МЫ ПОЛУЧИМ:');
+    bubbleText.x = 25;
+    bubbleText.y = 10;
+    bubbleText.style = {
+      fontFamily: 'pixel_bold',
+      fontSize: 20,
+      wordWrap: true,
+      wordWrapWidth: bubbleContainer.width,
+      dropShadow: true,
+      dropShadowAlpha: 0.5,
+      fill: 0xffffff,
+    };
+    bubbleContainer.addChild(bubbleText);
+
+    return bubbleContainer;
   }
 }

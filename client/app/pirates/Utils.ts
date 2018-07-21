@@ -39,15 +39,11 @@ export const IMG_PATHS = {
   CONT_FOOTER: 'assets/img/ui_container_footer.png',
   CONT_HEADER: 'assets/img/ui_container_header.png',
   PIRATE_HEAD: 'assets/img/ui_piratehead.png',
-  BUBBLE: 'assets/img/bubble.png'
 };
 
 class ImageAccessor {
   get BACKGROUND_SEA() {
     return PIXI.loader.resources[IMG_PATHS.BACKGROUND_SEA].texture;
-  }
-  get BUBBLE() {
-    return PIXI.loader.resources[IMG_PATHS.BUBBLE].texture;
   }
   get PIRATE_1() {
     return PIXI.loader.resources[IMG_PATHS.PIRATE_1].texture;

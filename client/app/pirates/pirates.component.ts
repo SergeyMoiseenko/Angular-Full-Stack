@@ -27,11 +27,11 @@ export class PiratesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout( () => {
       loadResources( () => {
-        this.http.post('http://localhost:3000/first', {}).subscribe();
+        /* this.http.post('http://localhost:3000/first', {}).subscribe();
         this.http.get('http://localhost:3000/babl').subscribe( (data) => {
-          console.log(data);
+          console.log(data); */
           this.runGame({ bubble: undefined });
-        });
+        /* }); */
       });
     }, 0);
   }
@@ -41,7 +41,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     if (!this.app) {
       this.app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
       this.container.nativeElement.appendChild(this.app.view);
-      this.app.render.resolution = 1;
+      this.app.render.resolution = 4;
     } else {
       this.app.stage.removeChildren();
     }

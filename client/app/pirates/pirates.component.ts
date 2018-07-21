@@ -31,7 +31,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     this.container.nativeElement.appendChild(app.view);
 
     const renderer = app.renderer;
-    renderer.resolution = 4;
+    renderer.resolution = 1;
     const container = new PIXI.Container();
 
     app.stage.addChild(container);

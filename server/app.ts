@@ -3,6 +3,7 @@ import * as express from 'express';
 import * as morgan from 'morgan';
 import * as mongoose from 'mongoose';
 import * as path from 'path';
+import {Sprint} from './models/sprint';
 
 import setRoutes from './routes';
 
@@ -28,17 +29,16 @@ mongoose.connect(mongodbURI)
     console.log('Connected to MongoDB');
 
     setRoutes(app);
-
+    // const obj = new Sprint({
+    //   name: 'GeekGame'
+    // });
+    // obj.save((err, item) => {});
     // app.get('/*', function(req, res) {
     //   res.sendFile(path.join(__dirname, '../public/index.html'));
     // });
 
     app.get('/hello', function (req, res) {
       res.send('Hello World!');
-    });
-
-    app.get('/task', function (req, res) {
-      res.json({'result': 'Yohoho!'});
     });
 
     if (!module.parent) {

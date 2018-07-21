@@ -4,77 +4,71 @@ from youtrack.connection import Connection as YT
 import argparse
 import json
 import requests
-
+from urllib.parse import quote
 
 TOKEN = 'perm:YS5icnl1a2hhbm92.SVNQ.IeAi1lOi1y3HkzATC9xxI5LzW1kMEx'
+LOGIN = 'a.bryukhanov'
+PASSWORD = 'L;tr1Djhj,tq2'
 ID = 'ISP'
 MAX = 500
 AFTER = 0
+TEST_NAME = 'Заварушка в Доренберге'
+YT_PATH = 'https://yohoho.myjetbrains.com/youtrack/'
+
 
 BASE_FILTER = 'type:Task '
 SPRINT_FILTER = 'sprints:{Заварушка в Доренберге} '
 FILTER_FINISHED = 'state:Done '
 FILTER_CRITICAL = 'priority:Critical '
 FILTER_PARROT = 'tag:Попугай '
-FILTER_ROME = 'tag:{Бутылка рома} '
+FILTER_RUM = 'tag:{Бутылка рома} '
 
 
-class Project:
-    def __init__(self, yt_path):
-        self.conn = YT(url=yt_path, login='a.bryukhanov', password='L;tr1Djhj,tq2')
+class Fish:
+    def __init__(self):
+        self.conn = YT(YT_PATH, LOGIN, PASSWORD)
 
-    def update(self, local_path, data):
-        # get data
-        r = requests.post(url=local_path, data=data)
+    def get_issue_data(self, project_id, filter):
+        issues = self.conn.get_issues(project_id, filter, AFTER, MAX)
+        total_reward = 0
+        for issue in issues:
+            total_reward += int(issue.get('Estimation', 0))
+
+        finished_issued = self.conn.get_issues(project_id, filter + FILTER_FINISHED, AFTER, MAX)
+        total_cost = 0
+        for issue in finished_issued:
+            total_cost += int(issue.get('Spent time', 0)) if int(issue.get('Spent time', 0)) < int(issue.get('Estimation', 0)) else int(issue.get('Estimation', 0))
+
+        return [total_reward, total_cost]
 
 
 def main():
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('--yt')
-    parser.add_argument('--port')
-    parser.add_argument('--type')
     args = parser.parse_args()
 
-    conn = Project(args.yt).conn
+    sprint = Fish()
 
-    common_filter = BASE_FILTER + SPRINT_FILTER + FILTER_CRITICAL# + FILTER_FINISHED
-    get_common = conn.get_issues(ID, common_filter, AFTER, MAX)
+    gold_filter = BASE_FILTER + SPRINT_FILTER + FILTER_CRITICAL
+    parrot_filter = gold_filter + FILTER_PARROT
+    rum_filter = gold_filter + FILTER_RUM
 
-    gold = 0
-    gold_cost = 0
-    for issue in get_common:
-        reward = int(issue.get('Estimation', 0))
-        gold += reward
-        cost = int(issue.get('Spent time', 0))
-        gold_cost += cost if cost < reward else reward
+    gold = sprint.get_issue_data(ID, gold_filter)
+    parrot = sprint.get_issue_data(ID, parrot_filter)
+    rum = sprint.get_issue_data(ID, rum_filter)
 
-    parrots_filter = common_filter + FILTER_PARROT
-    get_parrots = conn.get_issues(ID, parrots_filter, AFTER, MAX)
+    data = {
+        'name': TEST_NAME,
+        'gold': gold[0], 'curr_gold': gold[1],
+        'parrot': parrot[0], 'curr_parrot': parrot[1],
+        'diamond': rum[0], 'curr_diamond': rum[1]
+    }
 
-    parrots = 0
-    parrots_cost = 0
-    for issue in get_parrots:
-        reward = int(issue.get('Estimation', 0))
-        parrots += reward
-        cost = int(issue.get('Spent time', 0))
-        parrots_cost += cost if cost < reward else reward
-
-    rum_filter = common_filter + FILTER_ROME
-    get_rum = conn.get_issues(ID, rum_filter, AFTER, MAX)
-
-    rum = 0
-    rum_cost = 0
-    for issue in get_rum:
-        reward = int(issue.get('Estimation', 0))
-        rum += reward
-        cost = int(issue.get('Spent time', 0))
-        rum_cost += cost if cost < reward else reward
-
-    result = {'gold': {'estimated': gold, 'spent': gold_cost},
-              'parrots': {'estimated': parrots, 'spent': parrots_cost},
-              'rum': {'estimated': rum, 'spent': rum_cost}}
-
-    print(json.dumps(result))
+    if '_id' in requests.get('http://localhost:3000/api/sprint/' + quote(TEST_NAME)).json():
+        print('update sprint: ' + TEST_NAME)
+        print(requests.put('http://localhost:3000/api/sprint/' + quote(TEST_NAME), data))
+    else:
+        print('new sprint: ' + TEST_NAME)
+        print(requests.post('http://localhost:3000/api/sprint', data))
 
 
 if __name__ == '__main__':

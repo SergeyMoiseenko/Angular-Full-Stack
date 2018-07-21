@@ -41,7 +41,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     if (!this.app) {
       this.app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
       this.container.nativeElement.appendChild(this.app.view);
-      this.app.render.resolution = 4;
+      this.app.render.resolution = 1;
     } else {
       this.app.stage.removeChildren();
     }

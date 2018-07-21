@@ -116,7 +116,7 @@ class ImageAccessor {
     return PIXI.loader.resources[IMG_PATHS.CONT_HEADER].texture;
   }
   get PIRATE_HEAD() {
-    return PIXI.loader.resources[IMG_PATHS.PIRATE_HEAD].textur;
+    return PIXI.loader.resources[IMG_PATHS.PIRATE_HEAD].texture;
   }
 }
 

@@ -32,11 +32,13 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     this.container.nativeElement.appendChild(app.view);
 
     const renderer = app.renderer;
-    renderer.resolution = 4;
+    renderer.resolution = 1;
     const container = new PIXI.Container();
 
     app.stage.addChild(container);
     app.stage.addChild(this.createShip(130, 63)); // 500, 424
+    app.stage.addChild(this.createIsland(610, 310));
+    app.stage.addChild(this.createPirateHead(470, 10));
 
     const modal1 = this.createWoodenModal('ОСАДА GEEKNIGHT', [], 975, 30);
     const modal2 = this.createWoodenModal(
@@ -56,6 +58,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     app.stage.addChild(modal1);
     app.stage.addChild(modal2);
     app.stage.addChild(modal3);
+
 
     const slide = background(containerSize, new PIXI.Sprite(IMGS.BACKGROUND_SEA), 'cover');
     container.addChild(slide);
@@ -149,6 +152,16 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     shadowImg.scale = { x: scale, y: scale };
     shadowImg.position = { x: 20, y: shipImg.height };
     shipContainer.addChild(shadowImg);
+    shipContainer.addChild(this.createWave(-80, 490));
+    shipContainer.addChild(this.createWave(0, 510));
+    shipContainer.addChild(this.createWave(-100, 535));
+    shipContainer.addChild(this.createWave(-10, 565));
+    shipContainer.addChild(this.createWave(80, 525));
+    shipContainer.addChild(this.createWave(120, 550));
+    shipContainer.addChild(this.createWave(215, 535));
+    shipContainer.addChild(this.createWave(255, 515));
+    shipContainer.addChild(this.createWave(345, 575));
+    shipContainer.addChild(shipImg);
 
     this.addPirateToShip(shipContainer, 85, 65, IMGS.PIRATE_1, scale);
     this.addPirateToShip(shipContainer, 275, 315, IMGS.PIRATE_2, scale);
@@ -156,11 +169,47 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     this.addPirateToShip(shipContainer, 85, 385, IMGS.PIRATE_4, scale);
     this.addPirateToShip(shipContainer, 315, 385, IMGS.PIRATE_5, scale);
 
-    shipContainer.width = shipImg.width;
+    shipContainer.width = shipImg.width + 100;
     shipContainer.height = shipImg.height + shadowImg.height;
     shipContainer.x = x;
     shipContainer.y = y;
     return shipContainer;
+  }
+
+  createIsland(x, y) {
+    const scale = 0.625;
+
+    const islandContainer = new PIXI.Container();
+
+    const islandImage = new PIXI.Sprite(IMGS.ISLAND);
+    islandImage.position = { x: 0, y: 0 };
+    islandImage.scale = { x: scale, y: scale };
+    islandContainer.addChild(islandImage);
+
+    islandContainer.x = x;
+    islandContainer.y = y;
+    islandContainer.width = islandImage.width;
+    islandContainer.height = islandImage.height;
+
+    return islandContainer;
+  }
+
+  createWave(x, y) {
+    const scale = 0.625;
+
+    const waveContainer = new PIXI.Container();
+
+    const wavesImage = new PIXI.Sprite(IMGS.WAVES);
+    wavesImage.position = { x: 0, y: 0 };
+    wavesImage.scale = { x: scale, y: scale };
+    waveContainer.addChild(wavesImage);
+
+    waveContainer.x = x;
+    waveContainer.y = y;
+    waveContainer.width = wavesImage.width;
+    waveContainer.height = wavesImage.height;
+
+    return waveContainer;
   }
 
   addPirateToShip(shipContainer, x, y, pirateResources, scale) {
@@ -168,5 +217,23 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     sprite.scale = { x: scale, y: scale };
     sprite.position = { x, y };
     shipContainer.addChild(sprite);
+  }
+
+  createPirateHead(x, y) {
+    const scale = 0.625;
+
+    const headContainer = new PIXI.Container();
+
+    const headImage = new PIXI.Sprite(IMGS.PIRATE_HEAD);
+    headImage.position = { x: 0, y: 0 };
+    headImage.scale = { x: scale, y: scale };
+    headContainer.addChild(headImage);
+
+    headContainer.x = x;
+    headContainer.y = y;
+    headContainer.width = headImage.width;
+    headContainer.height = headImage.height;
+
+    return headContainer;
   }
 }

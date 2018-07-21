@@ -110,9 +110,9 @@ mongoose.connect(mongodbURI)
             const mess = 'Йо-хо-хо! Наша следующая цель шхуна ' + sprints[0].name +
             '! Если нам удастся захватить её с ' + sprints[0].begin + ' до ' +
             sprints[0].end + ', мы получим: ';
-            const task1_mess = first_task[0].text + ' ' + sprints[0].count1 + ' ' + first_task[0].text_end;
-            const task2_mess = second_task[0].text + ' ' + sprints[0].count2 + ' ' + second_task[0].text_end;
-            res.send({main: mess, prise: {prise: 'gold', count: sprints[0].gold},
+            const task1_mess = first_task[0].text + sprints[0].count1 + first_task[0].text_end;
+            const task2_mess = second_task[0].text  + sprints[0].count2 + second_task[0].text_end;
+            res.json({main: mess, prise: {prise: 'gold', count: sprints[0].gold},
               task1: {mess: task1_mess, prise: first_task[0].prize, count: sprints[0].count1},
               task2: {mess: task2_mess, prise: second_task[0].prize, count: sprints[0].count2}});
           });

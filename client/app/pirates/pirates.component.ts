@@ -1,4 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { background, IMGS, loadResources, IMG_PATHS } from './Utils';
 
 declare var PIXI: any;
@@ -10,9 +11,10 @@ declare var PIXI: any;
 })
 export class PiratesComponent implements OnInit, AfterViewInit {
   scale = 0.625;
+  app: any;
 
   constructor(
-    /* @Inject('PIXI') public pixi: typeof PIXI, */
+    public http: HttpClient,
   ) {}
 
   @ViewChild('gameContainer') container: ElementRef;
@@ -20,35 +22,37 @@ export class PiratesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
   }
 
+
+
   ngAfterViewInit(): void {
     setTimeout( () => {
-      loadResources(this.runGame.bind(this));
+      loadResources( () => {
+        this.http.post('http://localhost:3000/first', {}).subscribe();
+        this.http.get('http://localhost:3000/babl').subscribe( (data) => {
+          console.log(data);
+          this.runGame({ bubble: undefined });
+        });
+      });
     }, 0);
   }
 
-  runGame() {
+  runGame(options: { bubble: any; }) {
     const containerSize = {x: 1200, y: 675};
-    const app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
-    this.container.nativeElement.appendChild(app.view);
+    if (!this.app) {
+      this.app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
+      this.container.nativeElement.appendChild(this.app.view);
+      this.app.render.resolution = 1;
+    } else {
+      this.app.stage.removeChildren();
+    }
 
-    const renderer = app.renderer;
-    renderer.resolution = 1;
+    const renderer = this.app.renderer;
     const container = new PIXI.Container();
 
-    app.stage.addChild(container);
-    app.stage.addChild(this.createShip(130, 63)); // 500, 424
-    app.stage.addChild(this.createIsland(610, 310));
-    app.stage.addChild(this.createPirateHead(470, 10));
-    app.stage.addChild(this.createButton(
-      () => { console.log('click'); },
-      {
-        text: 'click',
-        width: 100,
-        height: 50,
-        x: 0,
-        y: 0
-      }
-    ));
+    this.app.stage.addChild(container);
+    this.app.stage.addChild(this.createShip(130, 63)); // 500, 424
+    this.app.stage.addChild(this.createIsland(610, 310));
+    this.app.stage.addChild(this.createPirateHead(470, 10));
 
     const modal1 = this.createWoodenModal(
       'ОСАДА "GEEKNIGHT"',
@@ -83,15 +87,15 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       modal1.height + modal2.height + 90
     );
 
-    app.stage.addChild(modal1);
-    app.stage.addChild(modal2);
-    app.stage.addChild(modal3);
+    this.app.stage.addChild(modal1);
+    this.app.stage.addChild(modal2);
+    this.app.stage.addChild(modal3);
 
 
     const slide = background(containerSize, new PIXI.Sprite(IMGS.BACKGROUND_SEA), 'cover');
     container.addChild(slide);
 
-    renderer.render(app.stage);
+    renderer.render(this.app.stage);
   }
 
   createWoodenModal(text, content, x, y) {

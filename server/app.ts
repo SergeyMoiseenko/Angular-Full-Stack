@@ -43,6 +43,7 @@ mongoose.connect(mongodbURI)
     // });
 
     app.post('/first', function (req, res) {
+      console.log('console.log');
       const first_sprint = new Sprint({
         number: 0,
         name: 'Start',

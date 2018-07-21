@@ -55,9 +55,13 @@ def main():
 
     data = {
         'name': TEST_NAME,
-        'gold': gold[0], 'curr_gold': gold[1],
-        'parrot': parrot[0], 'curr_parrot': parrot[1],
-        'diamond': rum[0], 'curr_diamond': rum[1],
+        'begin': '21/07/2018',
+        'end': '22/07/2018',
+        'gold': gold[0], 'curr_gold': gold[1], 'total_gold': 5000,
+        'parrot': parrot[0], 'curr_parrot': parrot[1], 'total_parrot': 10,
+        'diamond': rum[0], 'curr_diamond': rum[1], 'total_diamond': 20,
+        'total_scull': 50,
+        'total_crown': 3,
         'task1': 'Read map', 'count1': 4,
         'task2': 'Tales', 'count2': 2,
         'current': 1,
@@ -68,13 +72,6 @@ def main():
         print(requests.put('http://localhost:3000/api/sprint/' + quote(TEST_NAME), data))
     else:
         print('new sprint: ' + TEST_NAME)
-        data['begin'] = '21/07/2018',
-        data['end'] = "22/07/2018"
-        data['total_skull'] = 20
-        data['total_crown'] = 3
-        data['total_gold'] = 5000
-        data['total_parrot'] = 10
-        data['total_diamond'] = 50
         print(requests.post('http://localhost:3000/api/sprint', data))
 
 

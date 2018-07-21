@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 
 const sprintSchema = new mongoose.Schema({
+  number: Number,
   name: String,
   begin: String,
   end: String,
@@ -22,7 +23,8 @@ const sprintSchema = new mongoose.Schema({
   total_diamond: Number,
   battle: Number,
   fail_battle: Number,
-  big_gold: Number
+  big_gold: Number,
+  win: Boolean
 });
 
 export const Sprint = mongoose.model('Sprint', sprintSchema);

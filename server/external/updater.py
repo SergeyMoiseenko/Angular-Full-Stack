@@ -25,7 +25,7 @@ class Fish:
     def __init__(self):
         self.conn = YT(YT_PATH, LOGIN, PASSWORD)
 
-    def get_issue_data(self, project_id, request_filter):
+    def get_issue_data(self, project_id, request_filter, divider):
         issues = self.conn.get_issues(project_id, request_filter, AFTER, MAX)
         total_reward = 0
         for issue in issues:
@@ -36,7 +36,7 @@ class Fish:
         for issue in finished_issues:
             total_cost += int(issue.get('Spent time', 0)) if int(issue.get('Spent time', 0)) < int(issue.get('Estimation', 0)) else int(issue.get('Estimation', 0))
 
-        return [total_reward, total_cost]
+        return list(map(lambda x: x // divider, [total_reward, total_cost]))
 
 
 def main():
@@ -49,9 +49,9 @@ def main():
     parrot_filter = gold_filter + FILTER_PARROT
     rum_filter = gold_filter + FILTER_RUM
 
-    gold = conn.get_issue_data(ID, gold_filter)
-    parrot = conn.get_issue_data(ID, parrot_filter)
-    rum = conn.get_issue_data(ID, rum_filter)
+    gold = conn.get_issue_data(ID, gold_filter, 1)
+    parrot = conn.get_issue_data(ID, parrot_filter, 60)
+    rum = conn.get_issue_data(ID, rum_filter, 60)
 
     data = {
         'name': TEST_NAME,

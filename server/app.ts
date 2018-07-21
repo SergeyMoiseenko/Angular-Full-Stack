@@ -95,15 +95,27 @@ mongoose.connect(mongodbURI)
     });
 
     app.get('/babl', function(req, res) {
-      let mess;
       Sprint.find({
-        name: 'Start'
+        current: true
       }).exec(function(err, sprints) {
-        mess = 'Йо-хо-хо! Наша следующая цель шхуна ' + sprints[0].name +
-        '! Если нам удастся захватить её с ' + sprints[0].begin + ' до ' +
-        sprints[0].end + ', мы получим: ';
+        Task.find({
+          name: sprints[0].task1
+        }).exec(function(err1, first_task) {
+          Task.find({
+            name: sprints[0].task2
+          }).exec(function(err2, second_task) {
+            const mess = 'Йо-хо-хо! Наша следующая цель шхуна ' + sprints[0].name +
+            '! Если нам удастся захватить её с ' + sprints[0].begin + ' до ' +
+            sprints[0].end + ', мы получим: ';
+            const task1_mess = first_task[0].text + ' ' + sprints[0].count1 + ' ' + first_task[0].text_end;
+            const task2_mess = second_task[0].text + ' ' + sprints[0].count2 + ' ' + second_task[0].text_end;
+            res.send({main: mess, prise: {prise: 'gold', count: sprints[0].gold},
+              task1: {mess: task1_mess, prise: first_task[0].prize, count: sprints[0].count1},
+              task2: {mess: task2_mess, prise: second_task[0].prize, count: sprints[0].count2}});
+          });
+        });
       });
-      res.send({main: mess, task1: 'gdgg'});
+      // res.send({main: mess, task1: 'gdgg'});
     });
 
     if (!module.parent) {

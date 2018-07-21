@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-// import * as PIXI from 'pixi.js';
+import { background } from './Utils';
 
 declare var PIXI: any;
 
@@ -20,9 +20,25 @@ export class PiratesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    const containerSize = {x: 1110, y: 624};
     setTimeout( () => {
-      const app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+      const app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
       this.container.nativeElement.appendChild(app.view);
+
+
+
+      const renderer = app.renderer;
+      const container = new PIXI.Container();
+
+      app.stage.addChild(container);
+
+      PIXI.loader.add('assets/img/bg_ocean_middle.png').load(function () {
+          const slide = background(containerSize, new PIXI.Sprite.fromImage('assets/img/bg_ocean_middle.png'), 'cover');
+          container.addChild(slide);
+
+          renderer.render(app.stage);
+      });
+
     }, 0);
   }
 

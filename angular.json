@@ -18,7 +18,8 @@
             "polyfills": "client/polyfills.ts",
             "assets": [
               "client/assets",
-              "client/assets/favicon.ico"
+              "client/assets/favicon.ico",
+              "client/assets/img/bg_ocean_middle.png"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",

@@ -12,6 +12,7 @@ declare var PIXI: any;
 
 export const IMG_PATHS = {
   BACKGROUND_SEA: 'assets/img/bg_ocean_middle.png',
+  BUBBLE: 'assets/img/bubble.png',
   PIRATE_1: 'assets/img/char_pirate0.png',
   PIRATE_2: 'assets/img/char_pirate1.png',
   PIRATE_3: 'assets/img/char_pirate2.png',
@@ -34,6 +35,7 @@ export const IMG_PATHS = {
   BUTTON_HOVER: 'assets/img/ui_button_hover.png',
   BUTTON_PRESSED: 'assets/img/ui_button_pressed.png',
   CONT_BG: 'assets/img/ui_container_bg.png',
+  CONT_SEP: 'assets/img/ui_container_sep.png',
   CONT_FOOTER: 'assets/img/ui_container_footer.png',
   CONT_HEADER: 'assets/img/ui_container_header.png',
   PIRATE_HEAD: 'assets/img/ui_piratehead.png',
@@ -43,6 +45,9 @@ export const IMG_PATHS = {
 class ImageAccessor {
   get BACKGROUND_SEA() {
     return PIXI.loader.resources[IMG_PATHS.BACKGROUND_SEA].texture;
+  }
+  get BUBBLE() {
+    return PIXI.loader.resources[IMG_PATHS.BUBBLE].texture;
   }
   get PIRATE_1() {
     return PIXI.loader.resources[IMG_PATHS.PIRATE_1].texture;
@@ -110,6 +115,9 @@ class ImageAccessor {
   get CONT_BG() {
     return PIXI.loader.resources[IMG_PATHS.CONT_BG].texture;
   }
+  get CONT_SEP() {
+    return PIXI.loader.resources[IMG_PATHS.CONT_SEP].texture;
+  }
   get CONT_FOOTER() {
     return PIXI.loader.resources[IMG_PATHS.CONT_FOOTER].texture;
   }
@@ -130,6 +138,7 @@ export const IMGS = new ImageAccessor();
 export function loadResources(cb: () => void) {
   PIXI.loader
   .add(IMG_PATHS.BACKGROUND_SEA)
+  .add(IMG_PATHS.BUBBLE)
   .add(IMG_PATHS.PIRATE_1)
   .add(IMG_PATHS.PIRATE_2)
   .add(IMG_PATHS.PIRATE_3)
@@ -152,6 +161,7 @@ export function loadResources(cb: () => void) {
   .add(IMG_PATHS.BUTTON_HOVER)
   .add(IMG_PATHS.BUTTON_PRESSED)
   .add(IMG_PATHS.CONT_BG)
+  .add(IMG_PATHS.CONT_SEP)
   .add(IMG_PATHS.CONT_FOOTER)
   .add(IMG_PATHS.CONT_HEADER)
   .add(IMG_PATHS.PIRATE_HEAD)

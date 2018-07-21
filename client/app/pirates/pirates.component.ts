@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { zip } from 'rxjs';
 import { background, IMGS, loadResources, IMG_PATHS } from './Utils';
 
 declare var PIXI: any;
@@ -26,17 +27,34 @@ export class PiratesComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout( () => {
+
       loadResources( () => {
         // this.http.post('http://localhost:3000/first', null).subscribe();
-        this.http.get('/api/babl').subscribe( (data) => {
-          console.log(data);
-          this.runGame({ bubble: undefined });
+        zip(
+          this.http.get('/api/babl'),
+          this.http.get('/api/sprint/current/true'),
+          (babl, sprint) => ({bubble: babl, sprint})
+        ).subscribe( data => {
+          this.runGame(data);
         });
+        setInterval(() => {
+        zip(
+          this.http.get('/api/babl'),
+          this.http.get('/api/sprint/current/true'),
+          (babl, sprint) => ({bubble: babl, sprint})
+        ).subscribe( data => {
+          this.runGame(data);
+        });
+      }, 10000);
+
+        /* this.http.get('/api/babl').subscribe( (data) => {
+
+        }); */
       });
     }, 0);
   }
 
-  runGame(options: { bubble: any; }) {
+  runGame(options: { bubble: any; sprint: any; }) {
     const containerSize = {x: 1200, y: 675};
     if (!this.app) {
       this.app = new PIXI.Application(containerSize.x, containerSize.y, {backgroundColor : 0x1099bb});
@@ -46,22 +64,22 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     }
 
     const renderer = this.app.renderer;
-    renderer.resolution = 4;
+    renderer.resolution = 1;
     const container = new PIXI.Container();
 
     this.app.stage.addChild(container);
     this.app.stage.addChild(this.createShip(130, 63)); // 500, 424
     this.app.stage.addChild(this.createIsland(610, 310));
     this.app.stage.addChild(this.createPirateHead(450, 10));
-    this.app.stage.addChild(this.createBubble());
+    this.app.stage.addChild(this.createBubble(options.bubble));
 
     const modal1 = this.createWoodenModal(
       'ОСАДА "GEEKNIGHT"',
       true,
       [
-        this.createLabel(IMGS.STAT_GOLD, 50, 'fraction', 500),
-        this.createLabel(IMGS.STAT_DIAMOND, 50, 'fraction', 500),
-        this.createLabel(IMGS.STAT_CROWN, 50, 'fraction', 500),
+        this.createLabel(IMGS.STAT_GOLD, options.sprint.curr_gold, 'fraction', options.sprint.gold),
+        this.createLabel(IMGS.STAT_DIAMOND, options.sprint.curr_diamond, 'fraction', options.sprint.diamond),
+        this.createLabel(IMGS.STAT_CROWN, options.sprint.curr_parrot, 'fraction', options.sprint.parrot),
         this.createButton(
           () => { console.log('click'); },
           {
@@ -80,11 +98,11 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       'СОКРОВИЩНИЦА',
       false,
       [
-        this.createLabel(IMGS.STAT_GOLD, 5000, '', ''),
-        this.createLabel(IMGS.STAT_DIAMOND, 5000, '', ''),
-        this.createLabel(IMGS.STAT_SKULL, 5000, '', ''),
-        this.createLabel(IMGS.STAT_PARROT, 5000, '', ''),
-        this.createLabel(IMGS.STAT_CROWN, 5000, '', '')
+        this.createLabel(IMGS.STAT_GOLD, options.sprint.total_gold, '', ''),
+        this.createLabel(IMGS.STAT_DIAMOND, options.sprint.total_diamond, '', ''),
+        this.createLabel(IMGS.STAT_SKULL, options.sprint.total_skull, '', ''),
+        this.createLabel(IMGS.STAT_PARROT, options.sprint.total_parrot, '', ''),
+        this.createLabel(IMGS.STAT_CROWN, options.sprint.total_crown, '', '')
       ],
       1005,
       modal1.height + 30
@@ -421,7 +439,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     };
   }
 
-  createBubble() {
+  createBubble(data) {
     const bubbleContainer = new PIXI.Container();
     bubbleContainer.x = 580;
     bubbleContainer.y = 25;
@@ -431,7 +449,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
 
     bubbleImage.scale = { x: 0.625, y: 0.625 };
 
-    const bubbleText = new PIXI.Text('ЙО-ХО-ХО!НАША СЛЕДУЮЩАЯ ЦЕЛЬ - ТОРГОВАЯ ШХУНА GEEKNIGHT!\n\nЕСЛИ НАМ УДАСТСЯ ЗАХВАТИТЬ ЕЁ С 15.07 по 25.07, МЫ ПОЛУЧИМ:');
+    const bubbleText = new PIXI.Text(`${data.main.replace('Доренберге!', 'Доренберге!\n\n').replace(/\/2018/g, '/18')}`);
     bubbleText.x = 25;
     bubbleText.y = 10;
     bubbleText.style = {
@@ -444,6 +462,24 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       fill: 0xffffff,
     };
     bubbleContainer.addChild(bubbleText);
+
+    if (data.task1) {
+      const task1 = this.createLabel(IMGS['STAT_' + data.task1.prise.toUpperCase()], data.task1.mess, '', '');
+      bubbleContainer.addChild(task1);
+      task1.y = 110;
+      task1.x = 25;
+      task1.scale = {x: 0.625, y: 0.625};
+    }
+
+    if (data.task2) {
+      const task2 = this.createLabel(IMGS['STAT_' + data.task2.prise.toUpperCase()], data.task2.mess, '', '');
+      bubbleContainer.addChild(task2);
+      task2.y = 145;
+      task2.x = 25;
+      task2.scale = {x: 0.625, y: 0.625};
+    }
+
+
 
     return bubbleContainer;
   }

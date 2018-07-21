@@ -39,29 +39,31 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     app.stage.addChild(this.createShip(130, 63)); // 500, 424
     app.stage.addChild(this.createIsland(610, 310));
     app.stage.addChild(this.createPirateHead(470, 10));
-    app.stage.addChild(this.createButton(
-      () => { console.log('click'); },
-      {
-        text: 'click',
-        width: 100,
-        height: 50,
-        x: 0,
-        y: 0
-      }
-    ));
 
     const modal1 = this.createWoodenModal(
       'ОСАДА "GEEKNIGHT"',
+      true,
       [
         this.createLabel(IMGS.STAT_GOLD, 50, 'fraction', 500),
         this.createLabel(IMGS.STAT_DIAMOND, 50, 'fraction', 500),
-        this.createLabel(IMGS.STAT_CROWN, 50, 'fraction', 500)
+        this.createLabel(IMGS.STAT_CROWN, 50, 'fraction', 500),
+        this.createButton(
+          () => { console.log('click'); },
+          {
+            text: 'АБОРДАЖ!',
+            width: 210,
+            height: 50,
+            x: 0,
+            y: 0
+          }
+        )
       ],
-      975,
-      30
+      1005,
+      15
     );
     const modal2 = this.createWoodenModal(
       'СОКРОВИЩНИЦА',
+      false,
       [
         this.createLabel(IMGS.STAT_GOLD, 5000, '', ''),
         this.createLabel(IMGS.STAT_DIAMOND, 5000, '', ''),
@@ -69,18 +71,19 @@ export class PiratesComponent implements OnInit, AfterViewInit {
         this.createLabel(IMGS.STAT_PARROT, 5000, '', ''),
         this.createLabel(IMGS.STAT_CROWN, 5000, '', '')
       ],
-      975,
-      modal1.height + 60
+      1005,
+      modal1.height + 30
     );
     const modal3 = this.createWoodenModal(
       'БОРТЖУРНАЛ',
+      false,
       [
         this.createLabel(IMGS.STAT_BATTLES, 25, 'subtext', '+20 / -5'),
         this.createLabel(IMGS.STAT_FLAG, 1100, '', ''),
         this.createLabel(IMGS.STAT_GOLD, 50000, '', '')
       ],
-      975,
-      modal1.height + modal2.height + 90
+      1005,
+      modal1.height + modal2.height + 45
     );
 
     app.stage.addChild(modal1);
@@ -94,7 +97,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     renderer.render(app.stage);
   }
 
-  createWoodenModal(text, content, x, y) {
+  createWoodenModal(text, date, content, x, y) {
     const woodenModal = new PIXI.Container();
     woodenModal.x = x;
     woodenModal.y = y;
@@ -102,11 +105,8 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     const woodenModalTop = new PIXI.Sprite(IMGS.CONT_HEADER);
     const woodenModalBottom = new PIXI.Sprite(IMGS.CONT_FOOTER);
     const woodenModalBackground = new PIXI.extras.TilingSprite(IMGS.CONT_BG);
-    woodenModalBackground.width = woodenModalTop.width;
-    woodenModalBackground.height = 100;
 
     const woodenModalTitle = new PIXI.Text(text);
-    woodenModalTitle.width = woodenModalBackground.width - 80;
     woodenModalTitle.x = 40;
     woodenModalTitle.y = 30;
     woodenModalTitle.style = {
@@ -119,25 +119,49 @@ export class PiratesComponent implements OnInit, AfterViewInit {
       fill: 0xffffff,
     };
 
+    const woodenModalSep = new PIXI.Sprite(IMGS.CONT_SEP);
+
     woodenModal.addChild(woodenModalTop);
     woodenModal.addChild(woodenModalBackground);
+    woodenModal.addChild(woodenModalBottom);
+    woodenModal.addChild(woodenModalTitle);
+    woodenModal.addChild(woodenModalSep);
+    woodenModalSep.y = woodenModalTitle.height + woodenModalTitle.y + 5;
+    woodenModalSep.width = woodenModalTop.width;
+    if (date) {
+      const woodenModalDate = new PIXI.Text('ДЕНЬ 3');
+      woodenModalDate.x = 40;
+      woodenModalDate.y = woodenModalTitle.height + woodenModalTitle.y;
+      woodenModalDate.style = {
+        fontFamily: 'pixel_normal',
+        fontSize: 24,
+        wordWrap: true,
+        wordWrapWidth: woodenModalBackground.width - 40,
+        dropShadow: true,
+        dropShadowAlpha: 0.5,
+        fill: 0xefb775
+      };
+      woodenModal.addChild(woodenModalDate);
+      woodenModalSep.y = woodenModalDate.height + woodenModalDate.y + 5;
+    }
     if (content.length) {
       const contentContainer = new PIXI.Container();
+      let contentHeight = 0;
 
       content.forEach((element, index) => {
-        element.y = index * (element.height + 10);
+        element.y = contentHeight;
         contentContainer.addChild(element);
+        contentHeight += element.height + 10;
       });
 
       woodenModal.addChild(contentContainer);
       contentContainer.x = woodenModalTitle.x;
-      contentContainer.y = woodenModalTitle.height + woodenModalTitle.y + 10;
+      contentContainer.y = woodenModalSep.height + woodenModalSep.y + 10;
       woodenModalBackground.height = contentContainer.height + contentContainer.y - woodenModalTop.height;
     }
-    woodenModal.addChild(woodenModalBottom);
-    woodenModal.addChild(woodenModalTitle);
 
     woodenModalBackground.y = woodenModalTop.height;
+    woodenModalBackground.width = woodenModalTop.width;
     woodenModalBottom.y =  woodenModalTop.height + woodenModalBackground.height;
 
     woodenModal.scale = { x: this.scale, y: this.scale };
@@ -320,9 +344,9 @@ export class PiratesComponent implements OnInit, AfterViewInit {
 
     if (text !== undefined) {
       const buttonText = new PIXI.Text(text);
-      buttonText.anchor.x = 0.2;
+      buttonText.anchor.x = 0.35;
       buttonText.anchor.y = 0.3;
-      buttonText.style = this.getButtonTextStyle(button.width - 40);
+      buttonText.style = this.getButtonTextStyle();
       buttonText.x = button.width  / 2;
       buttonText.y = button.height / 2;
       button.addChild(buttonText);
@@ -370,12 +394,11 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     this.texture = IMGS.BUTTON;
   };
 
-  getButtonTextStyle(width) {
+  getButtonTextStyle() {
     return {
       fontFamily: 'pixel_bold',
       fontSize: 28,
       wordWrap: true,
-      wordWrapWidth: width,
       dropShadow: true,
       dropShadowAlpha: 0.5,
       fill: 0xffffff,

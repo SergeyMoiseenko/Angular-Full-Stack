@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { background, IMGS, loadResources } from './Utils';
+import { background, IMGS, loadResources, IMG_PATHS } from './Utils';
 
 declare var PIXI: any;
 
@@ -38,9 +38,20 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     app.stage.addChild(container);
     app.stage.addChild(this.createShip(130, 63)); // 500, 424
 
-    const modal1 = this.createWoodenModal('ОСАДА GEEKNIGHT', 975, 30);
-    const modal2 = this.createWoodenModal('СОКРОВИЩНИЦА', 975, modal1.height + 60);
-    const modal3 = this.createWoodenModal('БОРТЖУРНАЛ', 975, modal1.height + modal2.height + 90);
+    const modal1 = this.createWoodenModal('ОСАДА GEEKNIGHT', [], 975, 30);
+    const modal2 = this.createWoodenModal(
+      'СОКРОВИЩНИЦА',
+      [
+        this.createLabel(IMGS.STAT_GOLD, 5000),
+        this.createLabel(IMGS.STAT_DIAMOND, 5000),
+        this.createLabel(IMGS.STAT_SKULL, 5000),
+        this.createLabel(IMGS.STAT_PARROT, 5000),
+        this.createLabel(IMGS.STAT_CROWN, 5000)
+      ],
+      975,
+      modal1.height + 60
+    );
+    const modal3 = this.createWoodenModal('БОРТЖУРНАЛ', [], 975, modal1.height + modal2.height + 90);
 
     app.stage.addChild(modal1);
     app.stage.addChild(modal2);
@@ -52,7 +63,7 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     renderer.render(app.stage);
   }
 
-  createWoodenModal(text, x, y) {
+  createWoodenModal(text, content, x, y) {
     const woodenModal = new PIXI.Container();
     woodenModal.x = x;
     woodenModal.y = y;
@@ -79,6 +90,19 @@ export class PiratesComponent implements OnInit, AfterViewInit {
 
     woodenModal.addChild(woodenModalTop);
     woodenModal.addChild(woodenModalBackground);
+    if (content.length) {
+      const contentContainer = new PIXI.Container();
+
+      content.forEach((element, index) => {
+        element.y = index * (element.height + 10);
+        contentContainer.addChild(element);
+      });
+
+      woodenModal.addChild(contentContainer);
+      contentContainer.x = woodenModalTitle.x;
+      contentContainer.y = woodenModalTitle.height + woodenModalTitle.y + 10;
+      woodenModalBackground.height = contentContainer.height + woodenModalTitle.height + woodenModalTitle.y;
+    }
     woodenModal.addChild(woodenModalBottom);
     woodenModal.addChild(woodenModalTitle);
 
@@ -88,6 +112,27 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     woodenModal.scale = { x: this.scale, y: this.scale };
 
     return woodenModal;
+  }
+
+  createLabel(icon, text) {
+    const labelContainer = new PIXI.Container();
+    const iconSprite = new PIXI.Sprite(icon);
+    const label = new PIXI.Text(text);
+
+    labelContainer.addChild(iconSprite);
+    labelContainer.addChild(label);
+
+    label.style = {
+      fontFamily: 'pixel_bold',
+      fontSize: 28,
+      dropShadow: true,
+      dropShadowAlpha: 0.5,
+      fill: 0xefb775,
+    };
+    label.y = (iconSprite.height - label.height) / 2;
+    label.x = iconSprite.width + 10;
+
+    return labelContainer;
   }
 
   createShip(x, y) {

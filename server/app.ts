@@ -115,7 +115,29 @@ mongoose.connect(mongodbURI)
           });
         });
       });
-      // res.send({main: mess, task1: 'gdgg'});
+    });
+
+    app.put('/boarding', function(req, res) {
+      Sprint.find({
+        current: true
+      }).exec(function(err, sprints) {
+        var upd;
+        if (sprints[0].gold === sprints[0].curr_gold) {
+          const gold = sprints[0].gold + sprints[0].total_gold;
+          const parrot = sprints[0].parrot + sprints[0].total_parrot;
+          const skull = sprints[0].skull + sprints[0].total_skull;
+          const crown = sprints[0].crown + sprints[0].total_crown;
+          const diamond = sprints[0].diamond + sprints[0].total_diamond;
+          upd = {win: true, current: false, total_gold: gold, total_parrot: parrot, total_skull: skull,
+          total_crown: crown, total_diamond: diamond, battle: sprints[0].battle + 1};
+        } else {
+          upd = {win: false, current: false, fail_battle: sprints[0].fail_battle + 1};
+        }
+        Sprint.findOneAndUpdate({ current: true }, upd, (err1) => {
+          if (err1) { return console.error(err1); }
+          res.sendStatus(200);
+        });
+      });
     });
 
     if (!module.parent) {

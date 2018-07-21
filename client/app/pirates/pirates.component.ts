@@ -9,6 +9,7 @@ declare var PIXI: any;
   styleUrls: ['./pirates.component.css']
 })
 export class PiratesComponent implements OnInit, AfterViewInit {
+  scale = 0.625;
 
   constructor(
     /* @Inject('PIXI') public pixi: typeof PIXI, */
@@ -36,7 +37,14 @@ export class PiratesComponent implements OnInit, AfterViewInit {
 
     app.stage.addChild(container);
     app.stage.addChild(this.createShip(130, 63)); // 500, 424
-    app.stage.addChild(this.createWoodenModal());
+
+    const modal1 = this.createWoodenModal('ОСАДА GEEKNIGHT', 975, 30);
+    const modal2 = this.createWoodenModal('СОКРОВИЩНИЦА', 975, modal1.height + 60);
+    const modal3 = this.createWoodenModal('БОРТЖУРНАЛ', 975, modal1.height + modal2.height + 90);
+
+    app.stage.addChild(modal1);
+    app.stage.addChild(modal2);
+    app.stage.addChild(modal3);
 
     const slide = background(containerSize, new PIXI.Sprite(IMGS.BACKGROUND_SEA), 'cover');
     container.addChild(slide);
@@ -44,43 +52,40 @@ export class PiratesComponent implements OnInit, AfterViewInit {
     renderer.render(app.stage);
   }
 
-  createWoodenModal() {
+  createWoodenModal(text, x, y) {
     const woodenModal = new PIXI.Container();
-    woodenModal.width = 286;
-    woodenModal.height = 376;
-    woodenModal.x = 884;
-    woodenModal.y = 30;
-
-    const woodenModalBackground = new PIXI.extras.TilingSprite(IMGS.CONT_BG);
-    woodenModalBackground.width = 286;
-    woodenModalBackground.height = 300;
-    woodenModalBackground.y = 38;
+    woodenModal.x = x;
+    woodenModal.y = y;
 
     const woodenModalTop = new PIXI.Sprite(IMGS.CONT_HEADER);
-    woodenModalTop.width = 286;
-    woodenModalTop.height = 38;
-
     const woodenModalBottom = new PIXI.Sprite(IMGS.CONT_FOOTER);
-    woodenModalBottom.width = 286;
-    woodenModalBottom.height = 38;
-    woodenModalBottom.y = 338;
+    const woodenModalBackground = new PIXI.extras.TilingSprite(IMGS.CONT_BG);
+    woodenModalBackground.width = woodenModalTop.width;
+    woodenModalBackground.height = 100;
 
-    const woodenModalTitle = new PIXI.Text('СОКРОВИЩНИЦА');
-    woodenModalTitle.width = 206;
+    const woodenModalTitle = new PIXI.Text(text);
+    woodenModalTitle.width = woodenModalBackground.width - 80;
     woodenModalTitle.x = 40;
     woodenModalTitle.y = 30;
     woodenModalTitle.style = {
       fontFamily: 'pixel_bold',
       fontSize: 28,
       wordWrap: true,
-      wordWrapWidth: 206,
+      wordWrapWidth: woodenModalBackground.width - 40,
+      dropShadow: true,
+      dropShadowAlpha: 0.5,
       fill: 0xffffff,
     };
 
-    woodenModal.addChild(woodenModalBackground);
     woodenModal.addChild(woodenModalTop);
-    woodenModal.addChild(woodenModalTitle);
+    woodenModal.addChild(woodenModalBackground);
     woodenModal.addChild(woodenModalBottom);
+    woodenModal.addChild(woodenModalTitle);
+
+    woodenModalBackground.y = woodenModalTop.height;
+    woodenModalBottom.y =  woodenModalTop.height + woodenModalBackground.height;
+
+    woodenModal.scale = { x: this.scale, y: this.scale };
 
     return woodenModal;
   }

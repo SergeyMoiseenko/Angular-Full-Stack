@@ -27,11 +27,11 @@ export class PiratesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout( () => {
       loadResources( () => {
-        this.http.post('http://localhost:3000/first', null).subscribe();
-        // this.http.get('/api/babl').subscribe( (data) => {
-        //   console.log(data);
-        //   this.runGame({ bubble: undefined });
-        // });
+        // this.http.post('http://localhost:3000/first', null).subscribe();
+        this.http.get('/api/babl').subscribe( (data) => {
+          console.log(data);
+          this.runGame({ bubble: undefined });
+        });
       });
     }, 0);
   }
